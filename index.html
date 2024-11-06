@@ -1,0 +1,58 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Library Access</title>
+    <script>
+        // Function to load library files
+        async function loadLibrary() {
+            const response = await fetch('/library');
+            const data = await response.json();
+            const libraryDiv = document.getElementById('library');
+            libraryDiv.innerHTML = '';
+            data.files.forEach(file => {
+                libraryDiv.innerHTML += `<div>${file}</div>`;
+            });
+        }
+
+        // Function to load video gallery
+        async function loadGallery() {
+            const response = await fetch('/gallery');
+            const data = await response.json();
+            const galleryDiv = document.getElementById('gallery');
+            galleryDiv.innerHTML = '';
+            data.videos.forEach(video => {
+                galleryDiv.innerHTML += `<div>${video}</div>`;
+            });
+        }
+
+        // Function to send chat message
+        async function sendMessage() {
+            const message = document.getElementById('message-input').value;
+            await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message })
+            });
+            document.getElementById('message-input').value = '';
+            document.getElementById('chat-window').innerHTML += `<div>${message}</div>`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Offline Library</h1>
+    <div id="library"></div>
+    <button onclick="loadLibrary()">Load Library</button>
+
+    <h2>Video Gallery</h2>
+    <div id="gallery"></div>
+    <button onclick="loadGallery()">Load Gallery</button>
+
+    <h2>Chat</h2>
+    <div id="chat-window"></div>
+    <input type="text" id="message-input" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send</button>
+</body>
+</html>
